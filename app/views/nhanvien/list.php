@@ -5,113 +5,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh Sách Nhân Viên</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid black;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        img {
-            width: 30px;
-            height: 30px;
-        }
-
-        .pagination {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .pagination a {
-            padding: 5px 10px;
-            text-decoration: none;
-            border: 1px solid black;
-            margin: 2px;
-        }
-
-        .logout {
-            text-align: right;
-            margin-bottom: 10px;
-        }
-
-        .btn {
-            padding: 5px 10px;
-            text-decoration: none;
-            border: 1px solid black;
-            margin: 2px;
-            display: inline-block;
-        }
-
-        .btn-danger {
-            color: white;
-            background-color: red;
-        }
-
-        .btn-edit {
-            color: white;
-            background-color: green;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <div class="logout">
+<body class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <strong>Xin chào, <?= $_SESSION['user']['fullname'] ?? 'User' ?>!</strong>
-        <a href="/KT/KT_Php/logout" class="btn">Đăng xuất</a>
+        <a href="/KT/KT_Php/logout" class="btn btn-outline-danger">Đăng xuất</a>
     </div>
 
-    <h2>Thông Tin Nhân Viên</h2>
+    <h2 class="text-center">Thông Tin Nhân Viên</h2>
     <?php if ($_SESSION['user']['role'] === 'admin'): ?>
-        <a href="/KT/KT_Php/add" class="btn btn-add">Thêm nhân viên</a>
+        <a href="/KT/KT_Php/add" class="btn btn-primary mb-3">Thêm nhân viên</a>
     <?php endif; ?>
-    <table>
-        <tr>
-            <th>Mã Nhân Viên</th>
-            <th>Tên Nhân Viên</th>
-            <th>Giới Tính</th>
-            <th>Nơi Sinh</th>
-            <th>Tên Phòng</th>
-            <th>Lương</th>
-            <?php if ($_SESSION['user']['role'] === 'admin'): ?>
-                <th>Hành động</th>
-            <?php endif; ?>
-        </tr>
-        <?php foreach ($nhanviens as $nv): ?>
+    <table class="table table-bordered table-hover text-center">
+        <thead class="table-light">
             <tr>
-                <td><?= htmlspecialchars($nv['Ma_NV']) ?></td>
-                <td><?= htmlspecialchars($nv['Ten_NV']) ?></td>
-                <td>
-                    <img src="app/views/<?= ($nv['Phai'] == 'NAM') ? 'man.png' : 'woman.png' ?>" alt="Giới tính">
-                </td>
-                <td><?= htmlspecialchars($nv['Noi_Sinh']) ?></td>
-                <td><?= htmlspecialchars($nv['Ten_Phong']) ?></td>
-                <td><?= htmlspecialchars($nv['Luong']) ?></td>
+                <th>Mã Nhân Viên</th>
+                <th>Tên Nhân Viên</th>
+                <th>Giới Tính</th>
+                <th>Nơi Sinh</th>
+                <th>Tên Phòng</th>
+                <th>Lương</th>
                 <?php if ($_SESSION['user']['role'] === 'admin'): ?>
-                    <td>
-                        <a href="/KT/KT_Php/edit/<?= $nv['Ma_NV'] ?>" class="btn btn-edit">Sửa</a>
-                        <a href="/KT/KT_Php/delete/<?= $nv['Ma_NV'] ?>" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
-                    </td>
+                    <th>Hành động</th>
                 <?php endif; ?>
             </tr>
-        <?php endforeach; ?>
+        </thead>
+        <tbody>
+            <?php foreach ($nhanviens as $nv): ?>
+                <tr>
+                    <td><?= htmlspecialchars($nv['Ma_NV']) ?></td>
+                    <td><?= htmlspecialchars($nv['Ten_NV']) ?></td>
+                    <td>
+                        <img src="app/views/<?= ($nv['Phai'] == 'NAM') ? 'man.png' : 'woman.png' ?>" alt="Giới tính" width="30" height="30">
+                    </td>
+                    <td><?= htmlspecialchars($nv['Noi_Sinh']) ?></td>
+                    <td><?= htmlspecialchars($nv['Ten_Phong']) ?></td>
+                    <td><?= htmlspecialchars($nv['Luong']) ?></td>
+                    <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                        <td>
+                            <a href="/KT/KT_Php/edit/<?= $nv['Ma_NV'] ?>" class="btn btn-success btn-sm">Sửa</a>
+                            <a href="/KT/KT_Php/delete/<?= $nv['Ma_NV'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
     </table>
 
-    <div class="pagination">
-        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <a href="<?= strtok($_SERVER["REQUEST_URI"], '?') ?>?page=<?= $i ?>">Trang <?= $i ?></a>
-        <?php endfor; ?>
-    </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <li class="page-item"><a class="page-link" href="<?= strtok($_SERVER["REQUEST_URI"], '?') ?>?page=<?= $i ?>">Trang <?= $i ?></a></li>
+            <?php endfor; ?>
+        </ul>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
