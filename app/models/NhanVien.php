@@ -32,12 +32,14 @@ class NhanVien
     }
     public function getById($id)
     {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE ma_nv = :id";
+        $query = "SELECT Ma_NV, Ten_NV, Phai, Noi_Sinh, Ma_Phong, Luong FROM nhanvien WHERE Ma_NV = :id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_OBJ);
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return $result ?: null;
     }
+
     public function addNhanVien($ma_nv, $ten_nv, $phai, $noi_sinh, $ma_phong, $luong)
     {
         $errors = [];

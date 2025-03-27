@@ -2,16 +2,19 @@
 // Require necessary files
 require_once('app/config/database.php');
 require_once('app/models/NhanVien.php');
+require_once('app/models/PhongBan.php');
 
 class NhanVienController
 {
     private $nhanVienModel;
+    private $phongBanModel;
     private $db;
 
     public function __construct()
     {
         $this->db = (new Database())->getConnection();
         $this->nhanVienModel = new NhanVien($this->db);
+        $this->phongBanModel = new PhongBan($this->db);
     }
 
     public function index()
@@ -39,7 +42,7 @@ class NhanVienController
 
     public function add()
     {
-        $phongban = (new PhongBan($this->db))->getAll();
+        $departments = $this->phongBanModel->getAll(); // Lấy danh sách phòng ban
         include_once 'app/views/nhanvien/add.php';
     }
 
@@ -66,9 +69,9 @@ class NhanVienController
 
     public function edit($id)
     {
-        $employee = $this->nhanVienModel->getById($id);
-
-        if ($employee) {
+        $nhanVien = $this->nhanVienModel->getById($id);
+        $departments = $this->phongBanModel->getAll();
+        if ($nhanVien) {
             include 'app/views/nhanvien/edit.php';
         } else {
             echo "Không tìm thấy nhân viên.";
